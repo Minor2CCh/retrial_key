@@ -42,7 +42,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
     public UnstableRetrialKeyItem(Settings settings) {
         super(settings);
     }
-    public int UNSTABLE_PROBABILITY = 100;
+    public int UNSTABLE_PROBABILITY = 20;
     private static final ExplosionBehavior EXPLOSION_BEHAVIOR = new AdvancedExplosionBehavior(
             true, false, Optional.of(1.22F), Registries.BLOCK.getEntryList(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity()));
     @Override
