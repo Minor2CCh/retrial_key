@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "retrial_key:trial_core"
+    },
+    "$": {
+      "item": "retrial_key:key_way"
+    }
+  },
+  "pattern": [
+    "#",
+    "$"
+  ],
+  "result": {
+    "count": 1,
+    "id": "retrial_key:infinite_retrial_key"
+  }
+}

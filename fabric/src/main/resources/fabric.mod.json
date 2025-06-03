@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "retrial_key",
+  "version": "${version}",
+  "name": "Retrial Key",
+  "description": "Add an item to force Trial Spawner to skip its cooldown time.",
+  "authors": [
+    "Minor2CCh"
+  ],
+  "contact": {
+    "homepage": ""
+  },
+  "license": "MIT",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.Minor2CCh.retrial_key.fabric.Retrial_keyFabric"
+    ],
+    "client": [
+      "com.Minor2CCh.retrial_key.fabric.client.Retrial_keyFabricClient"
+    ]
+  },
+  "mixins": [
+    "retrial_key.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.13",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "architectury": ">=13.0.8",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

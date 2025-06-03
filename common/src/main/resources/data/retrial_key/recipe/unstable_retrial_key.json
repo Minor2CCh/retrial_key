@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:compass"
+    },
+    "$": {
+      "item": "retrial_key:key_way"
+    }
+  },
+  "pattern": [
+    "#",
+    "$"
+  ],
+  "result": {
+    "count": 1,
+    "id": "retrial_key:unstable_retrial_key"
+  }
+}

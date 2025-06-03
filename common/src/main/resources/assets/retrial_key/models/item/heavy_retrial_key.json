@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "retrial_key:item/heavy_retrial_key"
+  }
+}

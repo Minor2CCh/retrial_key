@@ -1,0 +1,22 @@
+{
+  "itemGroup.retrial_key": "Retrial Key Item",
+  "item.retrial_key.retrial_key": "Retrial Key",
+  "item.retrial_key.key_way": "Key Way",
+  "item.retrial_key.key_way_mold": "Key Way Mold",
+  "item.retrial_key.heavy_retrial_key": "Heavy Retrial Key",
+  "item.retrial_key.infinite_retrial_key": "Infinite Retrial Key",
+  "item.retrial_key.trial_core": "Trial Core",
+  "item.retrial_key.retrial_key.desc": "Once used, it breaks down and disappears.",
+  "item.retrial_key.heavy_retrial_key.desc": "It can be used %d times.",
+  "item.retrial_key.infinite_retrial_key.desc": "No matter how many times I use it, it never goes away.",
+  "item.retrial_key.unstable_retrial_key": "Unstable Retrial Key",
+  "item.retrial_key.unstable_retrial_key.desc": "There's a %d%% chance of a sober, unpleasant event happening...",
+  "item.retrial_key.unstable_retrial_key.fail.0": "Nothing happened...",
+  "item.retrial_key.unstable_retrial_key.fail.1": "TrialSpawner Rebooted in an Ominous state...",
+  "item.retrial_key.unstable_retrial_key.fail.2": "You blacked out!",
+  "item.retrial_key.unstable_retrial_key.fail.3": "Potato...",
+  "item.retrial_key.unstable_retrial_key.fail.4": "Suddenly got a headache...",
+  "item.retrial_key.unstable_retrial_key.fail.5": "Added 6 more MOBs to spawn....",
+  "item.retrial_key.unstable_retrial_key.fail.6": "Blast Happened!",
+  "item.retrial_key.unstable_retrial_key.fail.7": "Warped..."
+}

@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "com.Minor2CCh.retrial_key.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "client": [
+  ],
+  "mixins": [
+    "TrialSpawnerAccessor",
+    "KeyWayMoldItemMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

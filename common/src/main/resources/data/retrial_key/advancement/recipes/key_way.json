@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_key_way_mold": {
+      "conditions": {
+        "items": [
+          {
+            "items": "retrial_key:key_way_mold"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "retrial_key:key_way"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_key_way_mold"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "retrial_key:key_way"
+    ]
+  }
+}

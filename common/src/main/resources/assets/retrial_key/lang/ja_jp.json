@@ -1,0 +1,22 @@
+{
+  "itemGroup.retrial_key": "Retrial Key Item",
+  "item.retrial_key.retrial_key": "リトライアルキー",
+  "item.retrial_key.key_way": "キーウェイ",
+  "item.retrial_key.key_way_mold": "キーウェイの金型",
+  "item.retrial_key.heavy_retrial_key": "ヘビーリトライアルキー",
+  "item.retrial_key.infinite_retrial_key": "無限のリトライアルキー",
+  "item.retrial_key.trial_core": "試練の核",
+  "item.retrial_key.retrial_key.desc": "一度使用すると壊れてなくなる。",
+  "item.retrial_key.heavy_retrial_key.desc": "%d回まで使用することができる。",
+  "item.retrial_key.infinite_retrial_key.desc": "何回使ってもなくならない。",
+  "item.retrial_key.unstable_retrial_key": "不安定なリトライアルキー",
+  "item.retrial_key.unstable_retrial_key.desc": "%d%%の確率で地味に嫌なことが起きるかも...",
+  "item.retrial_key.unstable_retrial_key.fail.0": "何も起こらなかった...",
+  "item.retrial_key.unstable_retrial_key.fail.1": "不吉な状態で再起動してしまった...",
+  "item.retrial_key.unstable_retrial_key.fail.2": "めのまえがまっくらになった！",
+  "item.retrial_key.unstable_retrial_key.fail.3": "ポイスネス・ポティト...",
+  "item.retrial_key.unstable_retrial_key.fail.4": "急に頭が痛くなってきた...",
+  "item.retrial_key.unstable_retrial_key.fail.5": "スポーンするMobが6体追加されてしまった...",
+  "item.retrial_key.unstable_retrial_key.fail.6": "爆風が起こった！",
+  "item.retrial_key.unstable_retrial_key.fail.7": "ワープしてしまった..."
+}

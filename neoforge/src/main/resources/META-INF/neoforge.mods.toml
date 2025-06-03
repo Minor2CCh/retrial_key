@@ -1,0 +1,38 @@
+modLoader = "javafml"
+loaderVersion = "[2,)"
+#issueTrackerURL = ""
+license = "MIT"
+
+[[mods]]
+modId = "retrial_key"
+version = "${version}"
+displayName = "Retrial Key"
+authors = "Minor2CCh"
+description = '''
+Add an item to force Trial Spawner to skip its cooldown time.
+'''
+logoFile = "icon.png"
+
+[[dependencies.retrial_key]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.retrial_key]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21,1.21.2)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.retrial_key]]
+modId = "architectury"
+type = "required"
+versionRange = "[13.0.8,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[mixins]]
+config = "retrial_key.mixins.json"
