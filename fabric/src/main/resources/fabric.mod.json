@@ -8,8 +8,10 @@
     "Minor2CCh"
   ],
   "contact": {
-    "homepage": ""
-  },
+    "homepage": "https://modrinth.com/project/retrial-key",
+    "issues": "https://github.com/Minor2CCh/retrial_key/issues",
+    "sources": "https://github.com/Minor2CCh/retrial_key"
+},
   "license": "MIT",
   "icon": "icon.png",
   "environment": "*",
