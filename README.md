@@ -23,7 +23,9 @@ Retrial Key, which has a 20% chance of causing a sobering and unpleasant event, 
 
 # New Material
 
-・A material that can be crafted using 5 heavy cores and 4 nether stars. An intermediate material for the Infinite Retrial Key.
+・Trial Core
+
+A material that can be crafted using 5 heavy cores and 4 nether stars. An intermediate material for the Infinite Retrial Key.
 
 # このMODについて
 試練のスポナーのクールタイムを強制的にスキップするアイテムを数種類追加するMODです。
