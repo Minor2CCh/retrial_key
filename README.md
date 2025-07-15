@@ -2,7 +2,7 @@
 This mod adds several items that force the Trial Spawner to skip the cooldown time.
 
 # Key Craft Process
-1. Craft the Key Way Mold using the key of ordeal and 8 iron blocks.
+1. Craft the Key Way Mold using Trial Key and 8 iron blocks.
 2. Craft a Key Way using 8 copper ingots and the Key Way Mold crafted earlier. The Key Way Mold does not disappear at this time.
 3. Craft a Retrial Key with Key Way and clock.
 4. Retrial keys can be crafted with different properties by using different materials in place of the clock.
