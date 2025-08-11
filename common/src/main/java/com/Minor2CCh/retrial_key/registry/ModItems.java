@@ -2,6 +2,7 @@ package com.Minor2CCh.retrial_key.registry;
 
 
 import com.Minor2CCh.retrial_key.Retrial_key;
+import com.Minor2CCh.retrial_key.config.ModConfigLoader;
 import com.Minor2CCh.retrial_key.item.*;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -11,10 +12,11 @@ import net.minecraft.util.Rarity;
 
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public class ModItems {
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Retrial_key.MOD_ID, RegistryKeys.ITEM);
-    public static final int KEY_DURABILITY = 256;
+    public static final int KEY_DURABILITY = ModConfigLoader.getConfig().heavyRetrialKeyDurability;
     public static final RegistrySupplier<Item> RETRIAL_KEY = registerItem("retrial_key", () -> new RetrialKeyItem(new Item.Settings().arch$tab(ModItemGroup.TAB_RETRIAL_KEY)));
     public static final RegistrySupplier<Item> KEY_WAY = registerItem("key_way", () -> new Item(new Item.Settings().arch$tab(ModItemGroup.TAB_RETRIAL_KEY)));
     public static final RegistrySupplier<Item> KEY_WAY_MOLD = registerItem("key_way_mold", () -> new KeyWayMoldItem(new Item.Settings().arch$tab(ModItemGroup.TAB_RETRIAL_KEY).maxCount(1)));
@@ -32,7 +34,7 @@ public class ModItems {
         ITEMS.register();
     }
     public static int getKeyDurability(){
-        return KEY_DURABILITY;
+        return Math.max(KEY_DURABILITY, 1);
     }
 
 

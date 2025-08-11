@@ -10,7 +10,7 @@
   "item.retrial_key.heavy_retrial_key.desc": "%d回まで使用することができる。",
   "item.retrial_key.infinite_retrial_key.desc": "何回使ってもなくならない。",
   "item.retrial_key.unstable_retrial_key": "不安定なリトライアルキー",
-  "item.retrial_key.unstable_retrial_key.desc": "%d%%の確率で地味に嫌なことが起きるかも...",
+  "item.retrial_key.unstable_retrial_key.desc": "%.1f%%の確率で地味に嫌なことが起きるかも...",
   "item.retrial_key.unstable_retrial_key.fail.0": "何も起こらなかった...",
   "item.retrial_key.unstable_retrial_key.fail.1": "不吉な状態で再起動してしまった...",
   "item.retrial_key.unstable_retrial_key.fail.2": "めのまえがまっくらになった！",
@@ -18,5 +18,6 @@
   "item.retrial_key.unstable_retrial_key.fail.4": "急に頭が痛くなってきた...",
   "item.retrial_key.unstable_retrial_key.fail.5": "スポーンするMobが6体追加されてしまった...",
   "item.retrial_key.unstable_retrial_key.fail.6": "爆風が起こった！",
-  "item.retrial_key.unstable_retrial_key.fail.7": "ワープしてしまった..."
+  "item.retrial_key.unstable_retrial_key.fail.7": "ワープしてしまった...",
+  "tag.item.retrial_key.keys": "素材に使用できる鍵"
 }
