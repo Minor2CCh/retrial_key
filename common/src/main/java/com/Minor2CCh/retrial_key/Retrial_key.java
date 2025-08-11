@@ -1,5 +1,6 @@
 package com.Minor2CCh.retrial_key;
 
+import com.Minor2CCh.retrial_key.config.ModConfigLoader;
 import com.Minor2CCh.retrial_key.registry.ModItemGroup;
 import com.Minor2CCh.retrial_key.registry.ModItems;
 import com.google.common.base.Suppliers;
@@ -12,7 +13,9 @@ public final class Retrial_key {
 
     public static final Supplier<RegistrarManager> REGISTRIES = Suppliers.memoize(() -> RegistrarManager.get(Retrial_key.MOD_ID));
     public static void init() {
-        //ModConfigLoader.initialize();
+        ModConfigLoader.load();
+
+        //System.out.println("KeyDurability: " + ModConfigLoader.getConfig().heavyRetrialKeyDurability);
 
 
         ModItems.init();

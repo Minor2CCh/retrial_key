@@ -10,7 +10,7 @@
   "item.retrial_key.heavy_retrial_key.desc": "It can be used %d times.",
   "item.retrial_key.infinite_retrial_key.desc": "No matter how many times I use it, it never goes away.",
   "item.retrial_key.unstable_retrial_key": "Unstable Retrial Key",
-  "item.retrial_key.unstable_retrial_key.desc": "There's a %d%% chance of a sober, unpleasant event happening...",
+  "item.retrial_key.unstable_retrial_key.desc": "There's a %.1f%% chance of a sober, unpleasant event happening...",
   "item.retrial_key.unstable_retrial_key.fail.0": "Nothing happened...",
   "item.retrial_key.unstable_retrial_key.fail.1": "TrialSpawner Rebooted in an Ominous state...",
   "item.retrial_key.unstable_retrial_key.fail.2": "You blacked out!",
@@ -18,5 +18,6 @@
   "item.retrial_key.unstable_retrial_key.fail.4": "Suddenly got a headache...",
   "item.retrial_key.unstable_retrial_key.fail.5": "Added 6 more MOBs to spawn....",
   "item.retrial_key.unstable_retrial_key.fail.6": "Blast Happened!",
-  "item.retrial_key.unstable_retrial_key.fail.7": "Warped..."
+  "item.retrial_key.unstable_retrial_key.fail.7": "Warped...",
+  "tag.item.retrial_key.keys": "Keys available for materials"
 }

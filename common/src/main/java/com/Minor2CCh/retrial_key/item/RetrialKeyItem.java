@@ -1,6 +1,7 @@
 package com.Minor2CCh.retrial_key.item;
 
 
+import com.Minor2CCh.retrial_key.config.ModConfigLoader;
 import com.Minor2CCh.retrial_key.mixin.TrialSpawnerAccessor;
 import com.Minor2CCh.retrial_key.registry.ModItems;
 import net.minecraft.block.BlockState;
@@ -45,7 +46,7 @@ public class RetrialKeyItem extends Item {
         if (blockState.getBlock() instanceof TrialSpawnerBlock) {
             if(blockState.get(TrialSpawnerBlock.TRIAL_SPAWNER_STATE).equals(TrialSpawnerState.COOLDOWN)){
                 if(!world.isClient()){
-                    modifyTrialSpawner(context, world, blockPos, playerEntity);
+                    modifyTrialSpawner(context, world, blockPos, playerEntity, false);
                 }
                 world.playSound(playerEntity, blockPos, SoundEvents.BLOCK_VAULT_INSERT_ITEM_FAIL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 world.playSound(playerEntity, blockPos, SoundEvents.BLOCK_TRIAL_SPAWNER_OMINOUS_ACTIVATE, SoundCategory.BLOCKS, 1.0F, 0.5F);
@@ -61,16 +62,24 @@ public class RetrialKeyItem extends Item {
         }
         return false;
     }
-    protected void modifyTrialSpawner(ItemUsageContext context, World world, BlockPos blockPos, PlayerEntity playerEntity){
+    protected void modifyTrialSpawner(ItemUsageContext context, World world, BlockPos blockPos, PlayerEntity playerEntity, boolean enforcementSkip){
         BlockState blockState = world.getBlockState(blockPos);
         TrialSpawnerBlockEntity trialSpawnerBlockEntity = (TrialSpawnerBlockEntity) world.getBlockEntity(blockPos);
         long oldCooldown = ((TrialSpawnerAccessor)(Objects.requireNonNull(trialSpawnerBlockEntity).getSpawner().getData())).cooldownEnd();//クライアントは0のみを返す
         //long cooldownLength = Objects.requireNonNull(trialSpawnerBlockEntity).getSpawner().getCooldownLength();
         long remainCooldown = oldCooldown - world.getTime();
         if(remainCooldown > 20) {
-            long newCooldown = 0;//world.getTime()+10;
+            long newCooldown;
+            long skipTime = ModConfigLoader.getConfig().skipCooldownTime;
+            if(skipTime <= 0 || remainCooldown - skipTime <= 0 || enforcementSkip){
+                newCooldown = 0;
+            }else{
+                newCooldown = oldCooldown - skipTime;
+            }
             ((TrialSpawnerAccessor)(Objects.requireNonNull(trialSpawnerBlockEntity).getSpawner().getData())).setCooldownEnd(newCooldown);
-            world.setBlockState(blockPos, blockState.with(TrialSpawnerBlock.TRIAL_SPAWNER_STATE, TrialSpawnerState.WAITING_FOR_PLAYERS).with(TrialSpawnerBlock.OMINOUS, Boolean.FALSE));
+            if(newCooldown == 0){
+                world.setBlockState(blockPos, blockState.with(TrialSpawnerBlock.TRIAL_SPAWNER_STATE, TrialSpawnerState.WAITING_FOR_PLAYERS).with(TrialSpawnerBlock.OMINOUS, Boolean.FALSE));
+            }
         }
     }
     protected void consumeItem(ItemUsageContext context, PlayerEntity playerEntity){
@@ -83,7 +92,6 @@ public class RetrialKeyItem extends Item {
     }
     @Override
     public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-            //tooltip.add(Text.translatable("item.minium_me.energy.type", Text.translatable(energyName)).formatted(formatting));
             tooltip.add(Text.translatable(itemStack.getTranslationKey()+".desc", ModItems.KEY_DURABILITY).formatted(Formatting.WHITE));
 
 

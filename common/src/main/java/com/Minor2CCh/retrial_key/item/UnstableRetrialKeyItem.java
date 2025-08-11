@@ -1,5 +1,6 @@
 package com.Minor2CCh.retrial_key.item;
 
+import com.Minor2CCh.retrial_key.config.ModConfigLoader;
 import com.Minor2CCh.retrial_key.mixin.TrialSpawnerAccessor;
 import com.Minor2CCh.retrial_key.registry.ModItems;
 import net.minecraft.block.Block;
@@ -8,7 +9,6 @@ import net.minecraft.block.TrialSpawnerBlock;
 import net.minecraft.block.entity.TrialSpawnerBlockEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.passive.FoxEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.WindChargeEntity;
 import net.minecraft.item.ItemStack;
@@ -42,41 +42,41 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
     public UnstableRetrialKeyItem(Settings settings) {
         super(settings);
     }
-    public int UNSTABLE_PROBABILITY = 20;
+    public double UNSTABLE_PROBABILITY = Math.min(1, Math.max(ModConfigLoader.getConfig().unstableEventProbably, 0));
     private static final ExplosionBehavior EXPLOSION_BEHAVIOR = new AdvancedExplosionBehavior(
             true, false, Optional.of(1.22F), Registries.BLOCK.getEntryList(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity()));
     @Override
-    protected void modifyTrialSpawner(ItemUsageContext context, World world, BlockPos blockPos, PlayerEntity playerEntity){
+    protected void modifyTrialSpawner(ItemUsageContext context, World world, BlockPos blockPos, PlayerEntity playerEntity, boolean enforcementSkip){
         Random random = new Random();
-        if(random.nextInt(100) < UNSTABLE_PROBABILITY){
+        if(random.nextFloat(1) < UNSTABLE_PROBABILITY){
             int forkID;
                 switch(forkID = random.nextInt(8)){
                     case 0:
                         break;
                     case 1:
-                        super.modifyTrialSpawner(context, world, blockPos, playerEntity);
+                        super.modifyTrialSpawner(context, world, blockPos, playerEntity, true);
                         BlockState blockState1 = world.getBlockState(blockPos);
                         world.setBlockState(blockPos, blockState1.with(TrialSpawnerBlock.OMINOUS, Boolean.TRUE));
                         break;
                     case 2:
-                        super.modifyTrialSpawner(context, world, blockPos, playerEntity);
+                        super.modifyTrialSpawner(context, world, blockPos, playerEntity, false);
                         playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 200, 0, false, false, true), null);
                         playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 200, 0, false, false, true), null);
                         break;
                     case 3:
-                        super.modifyTrialSpawner(context, world, blockPos, playerEntity);
+                        super.modifyTrialSpawner(context, world, blockPos, playerEntity, false);
                         int dropPotato = random.nextInt(2, Items.POISONOUS_POTATO.getMaxCount());
                         for(int i=0;i < dropPotato;i++){
                             Block.dropStack(world, blockPos, Items.POISONOUS_POTATO.getDefaultStack());
                         }
                         break;
                     case 4:
-                        super.modifyTrialSpawner(context, world, blockPos, playerEntity);
+                        super.modifyTrialSpawner(context, world, blockPos, playerEntity, false);
                         playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 200, 1, false, false, true), null);
                         playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 200, 3, false, false, true), null);
                         break;
                     case 5:
-                        super.modifyTrialSpawner(context, world, blockPos, playerEntity);
+                        super.modifyTrialSpawner(context, world, blockPos, playerEntity, true);
                         TrialSpawnerBlockEntity trialSpawnerBlockEntity = (TrialSpawnerBlockEntity) world.getBlockEntity(blockPos);
                         ((TrialSpawnerAccessor)(Objects.requireNonNull(trialSpawnerBlockEntity).getSpawner().getData())).setTotalSpawnedMobs(-6);
                         if(playerEntity.hasStatusEffect(StatusEffects.TRIAL_OMEN) || playerEntity.hasStatusEffect(StatusEffects.BAD_OMEN)){
@@ -85,7 +85,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                         }
                         break;
                     case 6:
-                        super.modifyTrialSpawner(context, world, blockPos, playerEntity);
+                        super.modifyTrialSpawner(context, world, blockPos, playerEntity, false);
                         WindChargeEntity windChargeEntity = new WindChargeEntity(world, context.getHitPos().getX(), context.getHitPos().getY(), context.getHitPos().getZ(), new Vec3d(0, -0.125, 0));
                             world.createExplosion(
                                     windChargeEntity,
@@ -103,7 +103,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                             );
                         break;
                     case 7:
-                        super.modifyTrialSpawner(context, world, blockPos, playerEntity);
+                        super.modifyTrialSpawner(context, world, blockPos, playerEntity, false);
                         for (int i = 0; i < 16; i++) {
                             double d = playerEntity.getX() + (playerEntity.getRandom().nextDouble() - 0.5) * 16.0;
                             double e = MathHelper.clamp(
@@ -133,13 +133,12 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                     playerEntity.sendMessage(Text.translatable(ModItems.UNSTABLE_RETRIAL_KEY.get().getTranslationKey()+".fail."+forkID), true);
                 }
         }else{
-            super.modifyTrialSpawner(context, world, blockPos, playerEntity);
+            super.modifyTrialSpawner(context, world, blockPos, playerEntity, false);
         }
     }
     @Override
     public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-        //tooltip.add(Text.translatable("item.minium_me.energy.type", Text.translatable(energyName)).formatted(formatting));
-        tooltip.add(Text.translatable(itemStack.getTranslationKey()+".desc", UNSTABLE_PROBABILITY).formatted(Formatting.WHITE));
+        tooltip.add(Text.translatable(itemStack.getTranslationKey()+".desc", UNSTABLE_PROBABILITY * 100).formatted(Formatting.WHITE));
 
 
     }
