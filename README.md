@@ -27,6 +27,20 @@ Retrial Key, which has a 20% chance of causing a sobering and unpleasant event, 
 
 A material that can be crafted using 5 heavy cores and 4 nether stars. An intermediate material for the Infinite Retrial Key.
 
+# Config(After 1.1.0)
+
+## heavyRetrialKeyDurability
+
+Sets the Durability of the Heavy Retrial Key. (Default:256)
+
+## unstableEventProbably
+
+Sets the probability that an unpleasant event will occur. (Default:0.2)
+
+## skipCooldownTime
+
+Adjusts the cool time for skipping by Retrial Key. 0 or less allows unconditional skipping. Some events with Unstable Retrial Key are skipped regardless of the value here. (Default:0)
+
 # このMODについて
 試練のスポナーのクールタイムを強制的にスキップするアイテムを数種類追加するMODです。
 
@@ -55,3 +69,17 @@ A material that can be crafted using 5 heavy cores and 4 nether stars. An interm
 ・試練の核
 
 ヘビーコア5個とネザースター4個を使用してクラフトすることができる素材。無限のリトライアルキーの中間素材。
+
+# Config(After 1.1.0)
+
+## heavyRetrialKeyDurability
+
+ヘビーリトライアルキーの耐久値を設定します。 (Default:256)
+
+## unstableEventProbably
+
+不安定なリトライアルキーにより地味に嫌な出来事が起こる確率を設定します。 (Default:0.2)
+
+## skipCooldownTime
+
+リトライアルキーによりスキップできる時間を設定します。0以下で無条件でスキップします。不安定なリトライアルキーによる一部のイベントはここの値に関わらずスキップします。 (Default:0)
