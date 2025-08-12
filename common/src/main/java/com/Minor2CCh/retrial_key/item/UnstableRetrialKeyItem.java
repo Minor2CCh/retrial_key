@@ -11,10 +11,8 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.WindChargeEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
-import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.BlockTags;
@@ -23,7 +21,6 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -32,7 +29,6 @@ import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.explosion.AdvancedExplosionBehavior;
 import net.minecraft.world.explosion.ExplosionBehavior;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
@@ -42,7 +38,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
     public UnstableRetrialKeyItem(Settings settings) {
         super(settings);
     }
-    public double UNSTABLE_PROBABILITY = Math.min(1, Math.max(ModConfigLoader.getConfig().unstableEventProbably, 0));
+    public static double UNSTABLE_PROBABILITY = Math.min(1, Math.max(ModConfigLoader.getConfig().unstableEventProbably, 0));
     //private final
     @Override
     protected void modifyTrialSpawner(ItemUsageContext context, World world, BlockPos blockPos, PlayerEntity playerEntity, boolean enforcementSkip){
@@ -136,11 +132,11 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
         }else{
             super.modifyTrialSpawner(context, world, blockPos, playerEntity, false);
         }
-    }
+    }/*
     @Override
     public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         tooltip.add(Text.translatable(itemStack.getItem().getTranslationKey()+".desc", UNSTABLE_PROBABILITY * 100).formatted(Formatting.WHITE));
 
 
-    }
+    }*/
 }
