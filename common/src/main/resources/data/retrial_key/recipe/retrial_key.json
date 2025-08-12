@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "minecraft:clock"
-    },
-    "$": {
-      "item": "retrial_key:key_way"
-    }
+    "#": "minecraft:clock",
+    "$": "retrial_key:key_way"
   },
   "pattern": [
     "#",

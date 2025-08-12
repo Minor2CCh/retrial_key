@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "minecraft:nether_star"
-    },
-    "$": {
-      "item": "minecraft:heavy_core"
-    }
+    "#": "minecraft:nether_star",
+    "$": "minecraft:heavy_core"
   },
   "pattern": [
     "$#$",

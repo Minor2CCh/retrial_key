@@ -43,8 +43,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
         super(settings);
     }
     public double UNSTABLE_PROBABILITY = Math.min(1, Math.max(ModConfigLoader.getConfig().unstableEventProbably, 0));
-    private static final ExplosionBehavior EXPLOSION_BEHAVIOR = new AdvancedExplosionBehavior(
-            true, false, Optional.of(1.22F), Registries.BLOCK.getEntryList(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity()));
+    //private final
     @Override
     protected void modifyTrialSpawner(ItemUsageContext context, World world, BlockPos blockPos, PlayerEntity playerEntity, boolean enforcementSkip){
         Random random = new Random();
@@ -86,6 +85,8 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                         break;
                     case 6:
                         super.modifyTrialSpawner(context, world, blockPos, playerEntity, false);
+                        ExplosionBehavior EXPLOSION_BEHAVIOR = new AdvancedExplosionBehavior(
+                                true, false, Optional.of(1.22F), Registries.BLOCK.getOptional(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity()));
                         WindChargeEntity windChargeEntity = new WindChargeEntity(world, context.getHitPos().getX(), context.getHitPos().getY(), context.getHitPos().getZ(), new Vec3d(0, -0.125, 0));
                             world.createExplosion(
                                     windChargeEntity,
@@ -126,7 +127,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                             }
                         }
                         playerEntity.clearCurrentExplosion();
-                        playerEntity.getItemCooldownManager().set(this, 20);
+                        playerEntity.getItemCooldownManager().set(this.getDefaultStack(), 20);
                         break;
                 }
                 if(!world.isClient()){
@@ -138,7 +139,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
     }
     @Override
     public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-        tooltip.add(Text.translatable(itemStack.getTranslationKey()+".desc", UNSTABLE_PROBABILITY * 100).formatted(Formatting.WHITE));
+        tooltip.add(Text.translatable(itemStack.getItem().getTranslationKey()+".desc", UNSTABLE_PROBABILITY * 100).formatted(Formatting.WHITE));
 
 
     }

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "minecraft:compass"
-    },
-    "$": {
-      "item": "retrial_key:key_way"
-    }
+    "#": "minecraft:compass",
+    "$": "retrial_key:key_way"
   },
   "pattern": [
     "#",
