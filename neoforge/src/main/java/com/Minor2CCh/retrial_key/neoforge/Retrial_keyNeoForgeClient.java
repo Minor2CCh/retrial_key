@@ -4,7 +4,6 @@ import com.Minor2CCh.retrial_key.Retrial_key;
 import com.Minor2CCh.retrial_key.item.RetrialKeyItem;
 import com.Minor2CCh.retrial_key.item.UnstableRetrialKeyItem;
 import com.Minor2CCh.retrial_key.registry.ModItems;
-import net.minecraft.component.Component;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.neoforged.api.distmarker.Dist;
