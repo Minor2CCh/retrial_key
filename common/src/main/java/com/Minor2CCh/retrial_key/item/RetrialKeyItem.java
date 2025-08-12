@@ -111,7 +111,7 @@ public class RetrialKeyItem extends Item {
         BlockPos blockPos = context.getBlockPos();
         PlayerEntity playerEntity = context.getPlayer();
         if (accelerateTrialSpawner(context, world, blockPos, playerEntity)) {
-            return ActionResult.success(world.isClient);
+            return ActionResult.SUCCESS;
         }
         return ActionResult.PASS;
     }
@@ -164,7 +164,7 @@ public class RetrialKeyItem extends Item {
         }else if(context.getStack().isDamageable()){
             context.getStack().damage(1, playerEntity, LivingEntity.getSlotForHand(context.getHand()));
         }
-        playerEntity.getItemCooldownManager().set(this, 30);
+        playerEntity.getItemCooldownManager().set(this.getDefaultStack(), 30);
     }
     protected void consumeItem(ItemStack stack, World world){
         if(stack.getItem().getMaxCount() > 1){
@@ -175,7 +175,7 @@ public class RetrialKeyItem extends Item {
     }
     @Override
     public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-            tooltip.add(Text.translatable(itemStack.getTranslationKey()+".desc", ModItems.KEY_DURABILITY).formatted(Formatting.WHITE));
+            tooltip.add(Text.translatable(itemStack.getItem().getTranslationKey()+".desc", ModItems.KEY_DURABILITY).formatted(Formatting.WHITE));
 
 
     }
