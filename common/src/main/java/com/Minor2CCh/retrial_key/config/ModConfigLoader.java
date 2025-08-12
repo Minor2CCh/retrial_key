@@ -1,9 +1,11 @@
 package com.Minor2CCh.retrial_key.config;
 
 import com.Minor2CCh.retrial_key.Retrial_key;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+//import com.google.gson.Gson;
+//import com.google.gson.GsonBuilder;
 import dev.architectury.platform.Platform;
+import org.spongepowered.include.com.google.gson.Gson;
+import org.spongepowered.include.com.google.gson.GsonBuilder;
 
 import java.io.*;
 import java.nio.file.Files;
