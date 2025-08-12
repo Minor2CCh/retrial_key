@@ -2,12 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:storage_blocks/iron"
-    },
-    "$": {
-      "tag": "retrial_key:keys"
-    }
+    "#": "#c:storage_blocks/iron",
+    "$": "#retrial_key:keys"
+
   },
   "pattern": [
     "###",
