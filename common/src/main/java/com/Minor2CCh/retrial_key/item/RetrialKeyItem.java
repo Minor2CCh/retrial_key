@@ -7,7 +7,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.TrialSpawnerBlock;
 import net.minecraft.block.entity.TrialSpawnerBlockEntity;
 import net.minecraft.block.enums.TrialSpawnerState;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemUsageContext;
@@ -80,7 +79,7 @@ public class RetrialKeyItem extends Item {
         if(context.getStack().getItem().getMaxCount() > 1){
             context.getStack().decrementUnlessCreative(1, playerEntity);
         }else if(context.getStack().isDamageable()){
-            context.getStack().damage(1, playerEntity, LivingEntity.getSlotForHand(context.getHand()));
+            context.getStack().damage(1, playerEntity, context.getHand().getEquipmentSlot());
         }
         playerEntity.getItemCooldownManager().set(this.getDefaultStack(), 30);
     }/*

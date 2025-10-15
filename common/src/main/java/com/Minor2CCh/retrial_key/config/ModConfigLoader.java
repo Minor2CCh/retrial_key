@@ -1,8 +1,6 @@
 package com.Minor2CCh.retrial_key.config;
 
 import com.Minor2CCh.retrial_key.Retrial_key;
-//import com.google.gson.Gson;
-//import com.google.gson.GsonBuilder;
 import dev.architectury.platform.Platform;
 import org.spongepowered.include.com.google.gson.Gson;
 import org.spongepowered.include.com.google.gson.GsonBuilder;
@@ -37,7 +35,6 @@ public class ModConfigLoader {
             Files.createDirectories(CONFIG_PATH.getParent());
             try (Writer writer = Files.newBufferedWriter(CONFIG_PATH)) {
                 GSON.toJson(modConfig, writer);
-                //System.out.println("Create Success:"+CONFIG_PATH);
             }
         } catch (IOException e) {
             System.err.println("Failed to save config: " + e.getMessage());

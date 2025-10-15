@@ -21,6 +21,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.collection.Pool;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -96,6 +97,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                                     World.ExplosionSourceType.TRIGGER,
                                     ParticleTypes.GUST_EMITTER_SMALL,
                                     ParticleTypes.GUST_EMITTER_LARGE,
+                                    Pool.empty(),
                                     SoundEvents.ENTITY_WIND_CHARGE_WIND_BURST
                             );
                         break;
@@ -110,7 +112,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                             if (playerEntity.hasVehicle()) {
                                 playerEntity.stopRiding();
                             }
-                            Vec3d vec3d = playerEntity.getPos();
+                            Vec3d vec3d = playerEntity.getEntityPos();
                             if (playerEntity.teleport(d, e, f, true)) {
                                 world.emitGameEvent(GameEvent.TELEPORT, vec3d, GameEvent.Emitter.of(playerEntity));
                                 SoundCategory soundCategory;
