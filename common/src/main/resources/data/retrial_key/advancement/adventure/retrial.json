@@ -1,93 +1,85 @@
 {
   "parent": "minecraft:adventure/minecraft_trials_edition",
   "criteria": {
-    "revaulting": {
+    "retrial_retrial_key": {
       "conditions": {
-        "condition": "minecraft:any_of",
-        "terms": [
+        "location": [
           {
-            "location": [
-              {
-                "condition": "minecraft:location_check",
-                "predicate": {
-                  "block": {
-                    "blocks": "minecraft:trial_spawner",
-                    "state": {
-                      "trial_spawner_state": "cooldown"
-                    }
-                  }
-                }
-              },
-              {
-                "condition": "minecraft:match_tool",
-                "predicate": {
-                  "items": "retrial_key:retrial_key"
-                }
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "minecraft:trial_spawner"
               }
-            ]
+            }
           },
           {
-            "location": [
-              {
-                "condition": "minecraft:location_check",
-                "predicate": {
-                  "block": {
-                    "blocks": "minecraft:trial_spawner",
-                    "state": {
-                      "trial_spawner_state": "cooldown"
-                    }
-                  }
-                }
-              },
-              {
-                "condition": "minecraft:match_tool",
-                "predicate": {
-                  "items": "retrial_key:unstable_retrial_key"
-                }
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "retrial_key:retrial_key"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:item_used_on_block"
+    },
+    "retrial_unstable_retrial_key": {
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "minecraft:trial_spawner"
               }
-            ]
+            }
           },
           {
-            "location": [
-              {
-                "condition": "minecraft:location_check",
-                "predicate": {
-                  "block": {
-                    "blocks": "minecraft:trial_spawner",
-                    "state": {
-                      "trial_spawner_state": "cooldown"
-                    }
-                  }
-                }
-              },
-              {
-                "condition": "minecraft:match_tool",
-                "predicate": {
-                  "items": "retrial_key:heavy_retrial_key"
-                }
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "retrial_key:unstable_retrial_key"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:item_used_on_block"
+    },
+    "retrial_heavy_retrial_key": {
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "minecraft:trial_spawner"
               }
-            ]
+            }
           },
           {
-            "location": [
-              {
-                "condition": "minecraft:location_check",
-                "predicate": {
-                  "block": {
-                    "blocks": "minecraft:trial_spawner",
-                    "state": {
-                      "trial_spawner_state": "cooldown"
-                    }
-                  }
-                }
-              },
-              {
-                "condition": "minecraft:match_tool",
-                "predicate": {
-                  "items": "retrial_key:infinite_retrial_key"
-                }
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "retrial_key:heavy_retrial_key"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:item_used_on_block"
+    },
+    "retrial_infinite_retrial_key": {
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "minecraft:trial_spawner"
               }
-            ]
+            }
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "retrial_key:infinite_retrial_key"
+            }
           }
         ]
       },
@@ -108,7 +100,10 @@
   },
   "requirements": [
     [
-      "revaulting"
+      "retrial_retrial_key",
+      "retrial_unstable_retrial_key",
+      "retrial_heavy_retrial_key",
+      "retrial_infinite_retrial_key"
     ]
   ],
   "sends_telemetry_event": true
