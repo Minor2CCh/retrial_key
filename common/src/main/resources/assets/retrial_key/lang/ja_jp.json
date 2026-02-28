@@ -19,5 +19,7 @@
   "item.retrial_key.unstable_retrial_key.fail.5": "スポーンするMobが6体追加されてしまった...",
   "item.retrial_key.unstable_retrial_key.fail.6": "爆風が起こった！",
   "item.retrial_key.unstable_retrial_key.fail.7": "ワープしてしまった...",
-  "tag.item.retrial_key.keys": "素材に使用できる鍵"
+  "tag.item.retrial_key.keys": "素材に使用できる鍵",
+  "advancements.retrial_key.adventure.retrial.title": "追試",
+  "advancements.retrial_key.adventure.retrial.description": "いずれかのリトライアルキーをクールダウン中の試練のスポナーに差し込み、再度試練を行う。"
 }
