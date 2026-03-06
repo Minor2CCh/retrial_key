@@ -41,6 +41,10 @@ Sets the probability that an unpleasant event will occur. (Default:0.2)
 
 Adjusts the cool time for skipping by Retrial Key. 0 or less allows unconditional skipping. Some events with Unstable Retrial Key are skipped regardless of the value here. (Default:0)
 
+## tradableKeyWayMold(After 1.2.0)
+
+Some villagers in certain professions will begin selling Key Way Molds. If you find this interfering with trade lotteries, set it to false. (Default: true)
+
 # このMODについて
 試練のスポナーのクールタイムを強制的にスキップするアイテムを数種類追加するMODです。
 
@@ -83,3 +87,7 @@ Adjusts the cool time for skipping by Retrial Key. 0 or less allows unconditiona
 ## skipCooldownTime
 
 リトライアルキーによりスキップできる時間を設定します。0以下で無条件でスキップします。不安定なリトライアルキーによる一部のイベントはここの値に関わらずスキップします。 (Default:0)
+
+## tradableKeyWayMold(After 1.2.0)
+
+一部の職業の村人がKey Way Moldを販売するようになります。交易の抽選に邪魔な場合はfalseにしてください。(Default:true)
