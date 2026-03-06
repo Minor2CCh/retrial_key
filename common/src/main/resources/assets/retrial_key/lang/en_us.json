@@ -19,5 +19,7 @@
   "item.retrial_key.unstable_retrial_key.fail.5": "Added 6 more MOBs to spawn....",
   "item.retrial_key.unstable_retrial_key.fail.6": "Blast Happened!",
   "item.retrial_key.unstable_retrial_key.fail.7": "Warped...",
-  "tag.item.retrial_key.keys": "Keys available for materials"
+  "tag.item.retrial_key.keys": "Keys available for materials",
+  "advancements.retrial_key.adventure.retrial.title": "Retrial",
+  "advancements.retrial_key.adventure.retrial.description": "Use one of the Retrial Keys on the cooled-down Trial Spawner to attempt the trial again."
 }

@@ -3,6 +3,7 @@ package com.Minor2CCh.retrial_key;
 import com.Minor2CCh.retrial_key.config.ModConfigLoader;
 import com.Minor2CCh.retrial_key.registry.ModItemGroup;
 import com.Minor2CCh.retrial_key.registry.ModItems;
+import com.Minor2CCh.retrial_key.registry.ModVillagerTrades;
 import com.google.common.base.Suppliers;
 import dev.architectury.registry.registries.RegistrarManager;
 
@@ -20,6 +21,9 @@ public final class Retrial_key {
 
         ModItems.init();
         ModItemGroup.init();
+        if(ModConfigLoader.getConfig().getTradableKeyWayMold()){
+            ModVillagerTrades.init();
+        }
         // Write common init code here.
     }
 }

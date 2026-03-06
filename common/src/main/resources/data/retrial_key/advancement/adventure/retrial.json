@@ -1,0 +1,110 @@
+{
+  "parent": "minecraft:adventure/minecraft_trials_edition",
+  "criteria": {
+    "retrial_retrial_key": {
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "minecraft:trial_spawner"
+              }
+            }
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "retrial_key:retrial_key"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:item_used_on_block"
+    },
+    "retrial_unstable_retrial_key": {
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "minecraft:trial_spawner"
+              }
+            }
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "retrial_key:unstable_retrial_key"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:item_used_on_block"
+    },
+    "retrial_heavy_retrial_key": {
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "minecraft:trial_spawner"
+              }
+            }
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "retrial_key:heavy_retrial_key"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:item_used_on_block"
+    },
+    "retrial_infinite_retrial_key": {
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "minecraft:trial_spawner"
+              }
+            }
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "retrial_key:infinite_retrial_key"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:item_used_on_block"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.retrial_key.adventure.retrial.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "retrial_key:retrial_key"
+    },
+    "title": {
+      "translate": "advancements.retrial_key.adventure.retrial.title"
+    }
+  },
+  "requirements": [
+    [
+      "retrial_retrial_key",
+      "retrial_unstable_retrial_key",
+      "retrial_heavy_retrial_key",
+      "retrial_infinite_retrial_key"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -30,7 +30,7 @@ public class ModConfigLoader {
         }
         save(); // 初回生成
     }
-    public static void save() {
+    private static void save() {
         try {
             Files.createDirectories(CONFIG_PATH.getParent());
             try (Writer writer = Files.newBufferedWriter(CONFIG_PATH)) {
