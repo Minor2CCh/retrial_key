@@ -45,7 +45,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
     }
     private static final double UNSTABLE_PROBABILITY = Math.min(1, Math.max(ModConfigLoader.getConfig().getUnstableEventProbably(), 0));
     private static final Supplier<ExplosionBehavior> EXPLOSION_BEHAVIOR = Suppliers.memoize(() -> new AdvancedExplosionBehavior(
-            true, false, Optional.of(1.22F), Registries.BLOCK.getEntryList(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity())));
+            true, false, Optional.of(1.22F), Registries.BLOCK.getOptional(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity())));
     private static final int BOX_RADIUS = 5;
     @Override
     protected void modifyFromDispenser(BlockPointer pointer, boolean enforcementSkip){
@@ -275,7 +275,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                             }
                         }
                         playerEntity.clearCurrentExplosion();
-                        playerEntity.getItemCooldownManager().set(this, 20);
+                        playerEntity.getItemCooldownManager().set(this.getDefaultStack(), 20);
                         break;
                 }
             if(!world.isClient()){
@@ -287,7 +287,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
     }
     @Override
     public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-        tooltip.add(Text.translatable(itemStack.getTranslationKey()+".desc", UNSTABLE_PROBABILITY * 100).formatted(Formatting.WHITE));
+        tooltip.add(Text.translatable(itemStack.getItem().getTranslationKey()+".desc", UNSTABLE_PROBABILITY * 100).formatted(Formatting.WHITE));
 
 
     }
