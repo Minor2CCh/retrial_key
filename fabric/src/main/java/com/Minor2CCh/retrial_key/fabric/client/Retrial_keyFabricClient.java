@@ -1,5 +1,6 @@
 package com.Minor2CCh.retrial_key.fabric.client;
 
+import com.Minor2CCh.retrial_key.config.ModConfigLoader;
 import com.Minor2CCh.retrial_key.item.RetrialKeyItem;
 import com.Minor2CCh.retrial_key.item.UnstableRetrialKeyItem;
 import com.Minor2CCh.retrial_key.registry.ModItems;
@@ -17,7 +18,7 @@ public final class Retrial_keyFabricClient implements ClientModInitializer {
         // This entrypoint is suitable for setting up client-specific logic, such as rendering.
         ItemTooltipCallback.EVENT.register((ItemStack stack, Item.TooltipContext context, TooltipType tooltipType, java.util.List<Text> lines) -> {
             if (stack.getItem() instanceof UnstableRetrialKeyItem) {
-                lines.add(Text.translatable(stack.getItem().getTranslationKey()+".desc", UnstableRetrialKeyItem.UNSTABLE_PROBABILITY * 100).formatted(Formatting.WHITE));
+                lines.add(Text.translatable(stack.getItem().getTranslationKey()+".desc", ModConfigLoader.getConfig().getUnstableEventProbably() * 100).formatted(Formatting.WHITE));
             } else if (stack.getItem() instanceof RetrialKeyItem) {
                 lines.add(Text.translatable(stack.getItem().getTranslationKey()+".desc", ModItems.KEY_DURABILITY).formatted(Formatting.WHITE));
             }

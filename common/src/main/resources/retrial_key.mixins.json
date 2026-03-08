@@ -6,8 +6,8 @@
   "client": [
   ],
   "mixins": [
-    "TrialSpawnerAccessor",
     "KeyWayMoldItemMixin",
+    "TrialSpawnerAccessor",
     "TrialSpawnerDataMixin"
   ],
   "injectors": {
