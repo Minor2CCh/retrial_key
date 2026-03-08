@@ -3,7 +3,6 @@ package com.Minor2CCh.retrial_key.item;
 
 import com.Minor2CCh.retrial_key.config.ModConfigLoader;
 import com.Minor2CCh.retrial_key.mixin.TrialSpawnerAccessor;
-import com.Minor2CCh.retrial_key.registry.ModItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.TrialSpawnerBlock;
@@ -16,20 +15,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import java.util.List;
 import java.util.Random;
 
 public class RetrialKeyItem extends Item {
@@ -126,8 +121,8 @@ public class RetrialKeyItem extends Item {
                 world.playSound(playerEntity, blockPos, SoundEvents.BLOCK_TRIAL_SPAWNER_OMINOUS_ACTIVATE, SoundCategory.BLOCKS, 1.0F, 0.5F);
                 Random random = new Random();
                 for(int i=0;i<8;i++){
-                    world.addParticle(ParticleTypes.TRIAL_SPAWNER_DETECTION, blockPos.getX()+random.nextDouble(-0.25, 1.25), blockPos.getY()+random.nextDouble(-0.25, 1.25), blockPos.getZ()+random.nextDouble(-0.25, 1.25), 0.0, random.nextDouble(0.05, 0.075), 0.0);
-                    world.addParticle(ParticleTypes.TRIAL_SPAWNER_DETECTION_OMINOUS, blockPos.getX()+random.nextDouble(-0.25, 1.25), blockPos.getY()+random.nextDouble(-0.25, 1.25), blockPos.getZ()+random.nextDouble(-0.25, 1.25), 0.0, random.nextDouble(0.05, 0.075), 0.0);
+                    world.addParticleClient(ParticleTypes.TRIAL_SPAWNER_DETECTION, blockPos.getX()+random.nextDouble(-0.25, 1.25), blockPos.getY()+random.nextDouble(-0.25, 1.25), blockPos.getZ()+random.nextDouble(-0.25, 1.25), 0.0, random.nextDouble(0.05, 0.075), 0.0);
+                    world.addParticleClient(ParticleTypes.TRIAL_SPAWNER_DETECTION_OMINOUS, blockPos.getX()+random.nextDouble(-0.25, 1.25), blockPos.getY()+random.nextDouble(-0.25, 1.25), blockPos.getZ()+random.nextDouble(-0.25, 1.25), 0.0, random.nextDouble(0.05, 0.075), 0.0);
                 }
                 consumeItem(context, playerEntity);
                 return true;
@@ -172,11 +167,5 @@ public class RetrialKeyItem extends Item {
         }else if(stack.isDamageable() && world instanceof ServerWorld serverWorld){
             stack.damage(1, serverWorld, null, (item) -> {});
         }
-    }
-    @Override
-    public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-            tooltip.add(Text.translatable(itemStack.getItem().getTranslationKey()+".desc", ModItems.KEY_DURABILITY).formatted(Formatting.WHITE));
-
-
     }
 }

@@ -15,13 +15,13 @@ import net.minecraft.util.Rarity;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
-public class ModItems {
-
+public final class ModItems {
+    private ModItems(){}
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Retrial_key.MOD_ID, RegistryKeys.ITEM);
-    public static final int KEY_DURABILITY = ModConfigLoader.getConfig().heavyRetrialKeyDurability;
+    public static final int KEY_DURABILITY = ModConfigLoader.getConfig().getHeavyRetrialKeyDurability();
     public static final RegistrySupplier<Item> RETRIAL_KEY = registerItem("retrial_key", () -> new RetrialKeyItem(new Item.Settings().arch$tab(ModItemGroup.TAB_RETRIAL_KEY).registryKey(keyOfItem("retrial_key"))));
     public static final RegistrySupplier<Item> KEY_WAY = registerItem("key_way", () -> new Item(new Item.Settings().arch$tab(ModItemGroup.TAB_RETRIAL_KEY).registryKey(keyOfItem("key_way"))));
-    public static final RegistrySupplier<Item> KEY_WAY_MOLD = registerItem("key_way_mold", () -> new KeyWayMoldItem(new Item.Settings().arch$tab(ModItemGroup.TAB_RETRIAL_KEY).maxCount(1).registryKey(keyOfItem("key_way_mold"))));
+    public static final RegistrySupplier<Item> KEY_WAY_MOLD = registerItem("key_way_mold", () -> new Item(new Item.Settings().arch$tab(ModItemGroup.TAB_RETRIAL_KEY).maxCount(1).registryKey(keyOfItem("key_way_mold"))));
     public static final RegistrySupplier<Item> HEAVY_RETRIAL_KEY = registerItem("heavy_retrial_key", () -> new RetrialKeyItem(new Item.Settings().arch$tab(ModItemGroup.TAB_RETRIAL_KEY).maxDamage(getKeyDurability()).rarity(Rarity.EPIC).registryKey(keyOfItem("heavy_retrial_key"))));
     public static final RegistrySupplier<Item> INFINITE_RETRIAL_KEY = registerItem("infinite_retrial_key", () -> new RetrialKeyItem(new Item.Settings().arch$tab(ModItemGroup.TAB_RETRIAL_KEY).maxCount(1).rarity(Rarity.EPIC).registryKey(keyOfItem("infinite_retrial_key"))));
     public static final RegistrySupplier<Item> TRIAL_CORE = registerItem("trial_core", () -> new Item(new Item.Settings().arch$tab(ModItemGroup.TAB_RETRIAL_KEY).registryKey(keyOfItem("trial_core"))));
