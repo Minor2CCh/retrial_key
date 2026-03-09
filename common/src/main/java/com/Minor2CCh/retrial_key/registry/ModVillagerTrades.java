@@ -12,11 +12,11 @@ import java.util.Optional;
 public final class ModVillagerTrades {
     private ModVillagerTrades() {}
     public static void init(){
-        ModPlatform.registerVillagerTrade(VillagerProfession.TOOLSMITH, 2, (entity, random) ->
+        ModPlatform.registerVillagerTrade(VillagerProfession.TOOLSMITH, 2, (world, entity, random) ->
                 getKeyWayMoldTrade());
-        ModPlatform.registerVillagerTrade(VillagerProfession.ARMORER, 3, (entity, random) ->
+        ModPlatform.registerVillagerTrade(VillagerProfession.ARMORER, 3, (world, entity, random) ->
                 getKeyWayMoldTrade());
-        ModPlatform.registerVillagerTrade(VillagerProfession.WEAPONSMITH, 3, (entity, random) ->
+        ModPlatform.registerVillagerTrade(VillagerProfession.WEAPONSMITH, 3, (world, entity, random) ->
                 getKeyWayMoldTrade());
 
     }
