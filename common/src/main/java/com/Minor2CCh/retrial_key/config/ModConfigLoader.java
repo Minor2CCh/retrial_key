@@ -16,7 +16,6 @@ public class ModConfigLoader {
     private static final Path CONFIG_PATH = Path.of(new File(DIR,FILENAME).getPath());
     private static ModConfig modConfig;
     public static void load(){
-        System.out.println(CONFIG_PATH);
         if (Files.exists(CONFIG_PATH)) {
             try (Reader reader = Files.newBufferedReader(CONFIG_PATH)) {
                 modConfig = GSON.fromJson(reader, ModConfig.class);

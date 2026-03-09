@@ -13,10 +13,8 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.WindChargeEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
-import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.BlockTags;
@@ -25,7 +23,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.util.collection.Pool;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
@@ -45,7 +43,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
     }
     private static final double UNSTABLE_PROBABILITY = Math.min(1, Math.max(ModConfigLoader.getConfig().getUnstableEventProbably(), 0));
     private static final Supplier<ExplosionBehavior> EXPLOSION_BEHAVIOR = Suppliers.memoize(() -> new AdvancedExplosionBehavior(
-            true, false, Optional.of(1.22F), Registries.BLOCK.getEntryList(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity())));
+            true, false, Optional.of(1.22F), Registries.BLOCK.getOptional(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity())));
     private static final int BOX_RADIUS = 5;
     @Override
     protected void modifyFromDispenser(BlockPointer pointer, boolean enforcementSkip){
@@ -114,6 +112,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                             World.ExplosionSourceType.TRIGGER,
                             ParticleTypes.GUST_EMITTER_SMALL,
                             ParticleTypes.GUST_EMITTER_LARGE,
+                            Pool.empty(),
                             SoundEvents.ENTITY_WIND_CHARGE_WIND_BURST
                     );
                     break;
@@ -129,7 +128,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                             if (playerEntity.hasVehicle()) {
                                 playerEntity.stopRiding();
                             }
-                            Vec3d vec3d = playerEntity.getPos();
+                            Vec3d vec3d = playerEntity.getEntityPos();
                             if (playerEntity.teleport(d, e, f, true)) {
                                 world.emitGameEvent(GameEvent.TELEPORT, vec3d, GameEvent.Emitter.of(playerEntity));
                                 SoundCategory soundCategory;
@@ -248,6 +247,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                                     World.ExplosionSourceType.TRIGGER,
                                     ParticleTypes.GUST_EMITTER_SMALL,
                                     ParticleTypes.GUST_EMITTER_LARGE,
+                                    Pool.empty(),
                                     SoundEvents.ENTITY_WIND_CHARGE_WIND_BURST
                             );
                         break;
@@ -262,7 +262,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                             if (playerEntity.hasVehicle()) {
                                 playerEntity.stopRiding();
                             }
-                            Vec3d vec3d = playerEntity.getPos();
+                            Vec3d vec3d = playerEntity.getEntityPos();
                             if (playerEntity.teleport(d, e, f, true)) {
                                 world.emitGameEvent(GameEvent.TELEPORT, vec3d, GameEvent.Emitter.of(playerEntity));
                                 SoundCategory soundCategory;
@@ -275,7 +275,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                             }
                         }
                         playerEntity.clearCurrentExplosion();
-                        playerEntity.getItemCooldownManager().set(this, 20);
+                        playerEntity.getItemCooldownManager().set(context.getStack(), 20);
                         break;
                 }
             if(!world.isClient()){
@@ -284,11 +284,5 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
         }else{
             super.modifyTrialSpawner(context, world, blockPos, playerEntity, false);
         }
-    }
-    @Override
-    public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-        tooltip.add(Text.translatable(itemStack.getTranslationKey()+".desc", UNSTABLE_PROBABILITY * 100).formatted(Formatting.WHITE));
-
-
     }
 }

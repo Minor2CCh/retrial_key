@@ -1,6 +1,7 @@
 package com.Minor2CCh.retrial_key.neoforge;
 
 import com.Minor2CCh.retrial_key.Retrial_key;
+import com.Minor2CCh.retrial_key.config.ModConfigLoader;
 import com.Minor2CCh.retrial_key.item.RetrialKeyItem;
 import com.Minor2CCh.retrial_key.item.UnstableRetrialKeyItem;
 import com.Minor2CCh.retrial_key.registry.ModItems;
@@ -16,7 +17,7 @@ public class Retrial_keyNeoForgeClient {
     @SubscribeEvent
     public static void onTooltip(ItemTooltipEvent event) {
         if (event.getItemStack().getItem() instanceof UnstableRetrialKeyItem) {
-            event.getToolTip().add(Text.translatable(event.getItemStack().getItem().getTranslationKey()+".desc", UnstableRetrialKeyItem.UNSTABLE_PROBABILITY * 100).formatted(Formatting.WHITE));
+            event.getToolTip().add(Text.translatable(event.getItemStack().getItem().getTranslationKey()+".desc", ModConfigLoader.getConfig().getUnstableEventProbably() * 100).formatted(Formatting.WHITE));
         } else if (event.getItemStack().getItem() instanceof RetrialKeyItem) {
             event.getToolTip().add(Text.translatable(event.getItemStack().getItem().getTranslationKey()+".desc", ModItems.KEY_DURABILITY).formatted(Formatting.WHITE));
         }

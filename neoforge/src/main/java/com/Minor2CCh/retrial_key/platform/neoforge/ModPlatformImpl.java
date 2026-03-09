@@ -1,6 +1,7 @@
 package com.Minor2CCh.retrial_key.platform.neoforge;
 
 import com.Minor2CCh.retrial_key.Retrial_key;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -13,7 +14,7 @@ import java.util.function.Consumer;
 @SuppressWarnings("unused")
 @EventBusSubscriber(modid = Retrial_key.MOD_ID)
 public class ModPlatformImpl {
-    public static void registerVillagerTrade(VillagerProfession profession, int lv, TradeOffers.Factory factory){
+    public static void registerVillagerTrade(RegistryKey<VillagerProfession> profession, int lv, TradeOffers.Factory factory){
         TRADE_LISTENERS.add((event) -> {
             // 司書のみ対象
             if (event.getType() == profession) {
