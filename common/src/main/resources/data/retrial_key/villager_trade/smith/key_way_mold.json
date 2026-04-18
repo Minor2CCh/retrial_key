@@ -1,0 +1,16 @@
+{
+  "gives": {
+    "id": "retrial_key:key_way_mold"
+  },
+  "max_uses": 4.0,
+  "reputation_discount": 0.2,
+  "wants": {
+    "count": 19.0,
+    "id": "minecraft:emerald"
+  },
+  "additional_wants": {
+    "count": 5.0,
+    "id": "minecraft:iron_block"
+  },
+  "xp": 60.0
+}

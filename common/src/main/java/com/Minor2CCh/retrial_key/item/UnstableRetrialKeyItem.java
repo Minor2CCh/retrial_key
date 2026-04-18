@@ -4,31 +4,36 @@ import com.Minor2CCh.retrial_key.config.ModConfigLoader;
 import com.Minor2CCh.retrial_key.mixin.TrialSpawnerAccessor;
 import com.Minor2CCh.retrial_key.registry.ModItems;
 import com.google.common.base.Suppliers;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.TrialSpawnerBlock;
-import net.minecraft.block.entity.TrialSpawnerBlockEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.WindChargeEntity;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.item.Items;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.collection.Pool;
-import net.minecraft.util.math.*;
-import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
-import net.minecraft.world.explosion.AdvancedExplosionBehavior;
-import net.minecraft.world.explosion.ExplosionBehavior;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.random.WeightedList;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.hurtingprojectile.windcharge.WindCharge;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ExplosionDamageCalculator;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.SimpleExplosionDamageCalculator;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.TrialSpawnerBlock;
+import net.minecraft.world.level.block.entity.TrialSpawnerBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,69 +43,69 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class UnstableRetrialKeyItem extends RetrialKeyItem{
-    public UnstableRetrialKeyItem(Settings settings) {
+    public UnstableRetrialKeyItem(Item.Properties settings) {
         super(settings);
     }
-    private static final double UNSTABLE_PROBABILITY = Math.min(1, Math.max(ModConfigLoader.getConfig().getUnstableEventProbably(), 0));
-    private static final Supplier<ExplosionBehavior> EXPLOSION_BEHAVIOR = Suppliers.memoize(() -> new AdvancedExplosionBehavior(
-            true, false, Optional.of(1.22F), Registries.BLOCK.getOptional(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity())));
+    private static final double UNSTABLE_PROBABILITY = Math.clamp(ModConfigLoader.getConfig().getUnstableEventProbably(), 0, 1);
+    private static final Supplier<ExplosionDamageCalculator> EXPLOSION_BEHAVIOR = Suppliers.memoize(() -> new SimpleExplosionDamageCalculator(
+            true, false, Optional.of(1.22F), BuiltInRegistries.BLOCK.get(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity())));
     private static final int BOX_RADIUS = 5;
     @Override
-    protected void modifyFromDispenser(BlockPointer pointer, boolean enforcementSkip){
-        ServerWorld world = pointer.world();
-        Direction dir = pointer.state().get(DispenserBlock.FACING);
-        BlockPos pos = pointer.pos().offset(dir);
+    protected void modifyFromDispenser(BlockSource source, boolean enforcementSkip){
+        ServerLevel level = source.level();
+        Direction dir = source.state().getValue(DispenserBlock.FACING);
+        BlockPos pos = source.pos().relative(dir);
         Random random = new Random();
-        TrialSpawnerBlockEntity trialSpawnerBlockEntity = (TrialSpawnerBlockEntity) world.getBlockEntity(pos);
+        TrialSpawnerBlockEntity trialSpawnerBlockEntity = (TrialSpawnerBlockEntity) level.getBlockEntity(pos);
         if(trialSpawnerBlockEntity == null){
             return;
         }
         if(random.nextFloat(1) < UNSTABLE_PROBABILITY){
             int forkID = random.nextInt(8);
-            if(!world.isClient()){
-                playersConsumer(pointer, (playerEntity) -> playerEntity.sendMessage(Text.translatable(ModItems.UNSTABLE_RETRIAL_KEY.get().getTranslationKey()+".fail."+forkID), true));
+            if(!level.isClientSide()){
+                playersConsumer(source, (player) -> player.sendOverlayMessage(Component.translatable(ModItems.UNSTABLE_RETRIAL_KEY.get().getDescriptionId() + ".fail." + forkID)));
             }
             switch(forkID){
                 case 0:
                     break;
                 case 1:
-                    super.modifyFromDispenser(pointer, true);
-                    BlockState blockState1 = world.getBlockState(pos);
-                    world.setBlockState(pos, blockState1.with(TrialSpawnerBlock.OMINOUS, Boolean.TRUE));
+                    super.modifyFromDispenser(source, true);
+                    BlockState blockState1 = level.getBlockState(pos);
+                    level.setBlockAndUpdate(pos, blockState1.setValue(TrialSpawnerBlock.OMINOUS, Boolean.TRUE));
                     break;
                 case 2:
-                    super.modifyFromDispenser(pointer, false);
-                    playersConsumer(pointer, (playerEntity) -> {
-                        playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 200, 0, false, false, true), null);
-                        playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 200, 0, false, false, true), null);
+                    super.modifyFromDispenser(source, false);
+                    playersConsumer(source, (player) -> {
+                        player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 200, 0, false, false, true), null);
+                        player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 200, 0, false, false, true), null);
                     });
                     break;
                 case 3:
-                    super.modifyFromDispenser(pointer, false);
-                    int dropPotato = random.nextInt(2, Items.POISONOUS_POTATO.getMaxCount());
+                    super.modifyFromDispenser(source, false);
+                    int dropPotato = random.nextInt(2, Items.POISONOUS_POTATO.getDefaultMaxStackSize());
                     for(int i=0;i < dropPotato;i++){
-                        Block.dropStack(world, pos, Items.POISONOUS_POTATO.getDefaultStack());
+                        Block.popResource(level, pos, Items.POISONOUS_POTATO.getDefaultInstance());
                     }
                     break;
                 case 4:
-                    super.modifyFromDispenser(pointer, false);
-                    playersConsumer(pointer, (playerEntity) -> {
-                        playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 200, 1, false, false, true), null);
-                        playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 200, 3, false, false, true), null);
+                    super.modifyFromDispenser(source, false);
+                    playersConsumer(source, (player) -> {
+                        player.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 200, 1, false, false, true), null);
+                        player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 200, 3, false, false, true), null);
                     });
                     break;
                 case 5:
-                    super.modifyFromDispenser(pointer, true);
-                    ((TrialSpawnerAccessor)(trialSpawnerBlockEntity.getSpawner().getData())).setTotalSpawnedMobs(-6);
-                    if(nearOminousPlayer(pointer)){
-                        BlockState blockState5 = world.getBlockState(pos);
-                        world.setBlockState(pos, blockState5.with(TrialSpawnerBlock.OMINOUS, Boolean.TRUE));
+                    super.modifyFromDispenser(source, true);
+                    ((TrialSpawnerAccessor)(trialSpawnerBlockEntity.getTrialSpawner().getStateData())).setTotalSpawnedMobs(-6);
+                    if(nearOminousPlayer(source)){
+                        BlockState blockState5 = level.getBlockState(pos);
+                        level.setBlockAndUpdate(pos, blockState5.setValue(TrialSpawnerBlock.OMINOUS, Boolean.TRUE));
                     }
                     break;
                 case 6:
-                    super.modifyFromDispenser(pointer, false);
-                    WindChargeEntity windChargeEntity = new WindChargeEntity(world, pos.getX()+0.5, pos.getY()+1, pos.getZ()+0.5, new Vec3d(0, -0.125, 0));
-                    world.createExplosion(
+                    super.modifyFromDispenser(source, false);
+                    WindCharge windChargeEntity = new WindCharge(level, pos.getX()+0.5, pos.getY()+1, pos.getZ()+0.5, new Vec3(0, -0.125, 0));
+                    level.explode(
                             windChargeEntity,
                             null,
                             EXPLOSION_BEHAVIOR.get(),
@@ -109,52 +114,52 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                             windChargeEntity.getZ(),
                             2.4F,
                             false,
-                            World.ExplosionSourceType.TRIGGER,
+                            Level.ExplosionInteraction.TRIGGER,
                             ParticleTypes.GUST_EMITTER_SMALL,
                             ParticleTypes.GUST_EMITTER_LARGE,
-                            Pool.empty(),
-                            SoundEvents.ENTITY_WIND_CHARGE_WIND_BURST
+                            WeightedList.of(),
+                            SoundEvents.WIND_CHARGE_BURST
                     );
                     break;
                 case 7:
-                    super.modifyFromDispenser(pointer, false);
-                    playersConsumer(pointer, (playerEntity) -> {
+                    super.modifyFromDispenser(source, false);
+                    playersConsumer(source, (player) -> {
                         for (int i = 0; i < 16; i++) {
-                            double d = playerEntity.getX() + (playerEntity.getRandom().nextDouble() - 0.5) * 16.0;
-                            double e = MathHelper.clamp(
-                                    playerEntity.getY() + (playerEntity.getRandom().nextInt(16) - 8), world.getBottomY(), (world.getBottomY() + world.getLogicalHeight() - 1)
+                            double d = player.getX() + (player.getRandom().nextDouble() - 0.5) * 16.0;
+                            double e = Math.clamp(
+                                    player.getY() + (player.getRandom().nextInt(16) - 8), level.getMinY(), (level.getMinY() + level.getLogicalHeight() - 1)
                             );
-                            double f = playerEntity.getZ() + (playerEntity.getRandom().nextDouble() - 0.5) * 16.0;
-                            if (playerEntity.hasVehicle()) {
-                                playerEntity.stopRiding();
+                            double f = player.getZ() + (player.getRandom().nextDouble() - 0.5) * 16.0;
+                            if (player.isVehicle()) {
+                                player.stopRiding();
                             }
-                            Vec3d vec3d = playerEntity.getEntityPos();
-                            if (playerEntity.teleport(d, e, f, true)) {
-                                world.emitGameEvent(GameEvent.TELEPORT, vec3d, GameEvent.Emitter.of(playerEntity));
-                                SoundCategory soundCategory;
+                            Vec3 vec3d = player.position();
+                            if (player.randomTeleport(d, e, f, true)) {
+                                level.gameEvent(GameEvent.TELEPORT, vec3d, GameEvent.Context.of(player));
+                                SoundSource soundSource;
                                 SoundEvent soundEvent;
-                                soundEvent = SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT;
-                                soundCategory = SoundCategory.PLAYERS;
-                                world.playSound(playerEntity, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), soundEvent, soundCategory);
-                                playerEntity.onLanding();
+                                soundEvent = SoundEvents.CHORUS_FRUIT_TELEPORT;
+                                soundSource = SoundSource.PLAYERS;
+                                level.playSound(player, player.getX(), player.getY(), player.getZ(), soundEvent, soundSource);
+                                player.resetFallDistance();
+                                player.resetCurrentImpulseContext();
                                 break;
                             }
-                            playerEntity.clearCurrentExplosion();
                         }
                     });
                     break;
             }
         }else{
-            super.modifyFromDispenser(pointer, false);
+            super.modifyFromDispenser(source, false);
         }
     }
-    protected boolean nearOminousPlayer(BlockPointer pointer){
-        ServerWorld world = pointer.world();
-        Direction dir = pointer.state().get(DispenserBlock.FACING);
-        BlockPos pos = pointer.pos().offset(dir);
+    protected boolean nearOminousPlayer(BlockSource source){
+        ServerLevel level = source.level();
+        Direction dir = source.state().getValue(DispenserBlock.FACING);
+        BlockPos pos = source.pos().relative(dir);
         final int radius = BOX_RADIUS;
 
-        Box box = new Box(
+        AABB box = new AABB(
                 pos.getX() - radius,
                 pos.getY() - radius,
                 pos.getZ() - radius,
@@ -162,21 +167,21 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                 pos.getY() + radius + 1,
                 pos.getZ() + radius + 1
         );
-        List<PlayerEntity> players = world.getNonSpectatingEntities(PlayerEntity.class, box);
-        for(PlayerEntity player : players){
-            if(player.hasStatusEffect(StatusEffects.TRIAL_OMEN) || player.hasStatusEffect(StatusEffects.BAD_OMEN)){
+        List<Player> players = level.getEntitiesOfClass(Player.class, box);
+        for(Player player : players){
+            if(player.hasEffect(MobEffects.TRIAL_OMEN) || player.hasEffect(MobEffects.BAD_OMEN)){
                 return true;
             }
         }
         return false;
     }
-    protected void playersConsumer(BlockPointer pointer, Consumer<PlayerEntity> consumer){
-        ServerWorld world = pointer.world();
-        Direction dir = pointer.state().get(DispenserBlock.FACING);
-        BlockPos pos = pointer.pos().offset(dir);
+    protected void playersConsumer(BlockSource source, Consumer<Player> consumer){
+        ServerLevel level = source.level();
+        Direction dir = source.state().getValue(DispenserBlock.FACING);
+        BlockPos pos = source.pos().relative(dir);
         final int radius = BOX_RADIUS;
 
-        Box box = new Box(
+        AABB box = new AABB(
                 pos.getX() - radius,
                 pos.getY() - radius,
                 pos.getZ() - radius,
@@ -184,16 +189,16 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                 pos.getY() + radius + 1,
                 pos.getZ() + radius + 1
         );
-        List<PlayerEntity> players = world.getNonSpectatingEntities(PlayerEntity.class, box);
-        for(PlayerEntity player : players){
+        List<Player> players = level.getEntitiesOfClass(Player.class, box);
+        for(Player player : players){
             consumer.accept(player);
         }
     }
 
     @Override
-    protected void modifyTrialSpawner(ItemUsageContext context, World world, BlockPos blockPos, PlayerEntity playerEntity, boolean enforcementSkip){
+    protected void modifyTrialSpawner(UseOnContext context, Level level, BlockPos blockPos, Player player, boolean enforcementSkip){
         Random random = new Random();
-        TrialSpawnerBlockEntity trialSpawnerBlockEntity = (TrialSpawnerBlockEntity) world.getBlockEntity(blockPos);
+        TrialSpawnerBlockEntity trialSpawnerBlockEntity = (TrialSpawnerBlockEntity) level.getBlockEntity(blockPos);
         if(trialSpawnerBlockEntity == null){
             return;
         }
@@ -203,39 +208,39 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                     case 0:
                         break;
                     case 1:
-                        super.modifyTrialSpawner(context, world, blockPos, playerEntity, true);
-                        BlockState blockState1 = world.getBlockState(blockPos);
-                        world.setBlockState(blockPos, blockState1.with(TrialSpawnerBlock.OMINOUS, Boolean.TRUE));
+                        super.modifyTrialSpawner(context, level, blockPos, player, true);
+                        BlockState blockState1 = level.getBlockState(blockPos);
+                        level.setBlockAndUpdate(blockPos, blockState1.setValue(TrialSpawnerBlock.OMINOUS, Boolean.TRUE));
                         break;
                     case 2:
-                        super.modifyTrialSpawner(context, world, blockPos, playerEntity, false);
-                        playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 200, 0, false, false, true), null);
-                        playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 200, 0, false, false, true), null);
+                        super.modifyTrialSpawner(context, level, blockPos, player, false);
+                        player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 200, 0, false, false, true), null);
+                        player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 200, 0, false, false, true), null);
                         break;
                     case 3:
-                        super.modifyTrialSpawner(context, world, blockPos, playerEntity, false);
-                        int dropPotato = random.nextInt(2, Items.POISONOUS_POTATO.getMaxCount());
+                        super.modifyTrialSpawner(context, level, blockPos, player, false);
+                        int dropPotato = random.nextInt(2, Items.POISONOUS_POTATO.getDefaultMaxStackSize());
                         for(int i=0;i < dropPotato;i++){
-                            Block.dropStack(world, blockPos, Items.POISONOUS_POTATO.getDefaultStack());
+                            Block.popResource(level, blockPos, Items.POISONOUS_POTATO.getDefaultInstance());
                         }
                         break;
                     case 4:
-                        super.modifyTrialSpawner(context, world, blockPos, playerEntity, false);
-                        playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 200, 1, false, false, true), null);
-                        playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 200, 3, false, false, true), null);
+                        super.modifyTrialSpawner(context, level, blockPos, player, false);
+                        player.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 200, 1, false, false, true), null);
+                        player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 200, 3, false, false, true), null);
                         break;
                     case 5:
-                        super.modifyTrialSpawner(context, world, blockPos, playerEntity, true);
-                        ((TrialSpawnerAccessor)(trialSpawnerBlockEntity.getSpawner().getData())).setTotalSpawnedMobs(-6);
-                        if(playerEntity.hasStatusEffect(StatusEffects.TRIAL_OMEN) || playerEntity.hasStatusEffect(StatusEffects.BAD_OMEN)){
-                            BlockState blockState5 = world.getBlockState(blockPos);
-                            world.setBlockState(blockPos, blockState5.with(TrialSpawnerBlock.OMINOUS, Boolean.TRUE));
+                        super.modifyTrialSpawner(context, level, blockPos, player, true);
+                        ((TrialSpawnerAccessor)(trialSpawnerBlockEntity.getTrialSpawner().getStateData())).setTotalSpawnedMobs(-6);
+                        if(player.hasEffect(MobEffects.TRIAL_OMEN) || player.hasEffect(MobEffects.BAD_OMEN)){
+                            BlockState blockState5 = level.getBlockState(blockPos);
+                            level.setBlockAndUpdate(blockPos, blockState5.setValue(TrialSpawnerBlock.OMINOUS, Boolean.TRUE));
                         }
                         break;
                     case 6:
-                        super.modifyTrialSpawner(context, world, blockPos, playerEntity, false);
-                        WindChargeEntity windChargeEntity = new WindChargeEntity(world, context.getHitPos().getX(), context.getHitPos().getY(), context.getHitPos().getZ(), new Vec3d(0, -0.125, 0));
-                            world.createExplosion(
+                        super.modifyTrialSpawner(context, level, blockPos, player, false);
+                        WindCharge windChargeEntity = new WindCharge(level, context.getClickLocation().x(), context.getClickLocation().y(), context.getClickLocation().z(), new Vec3(0, -0.125, 0));
+                            level.explode(
                                     windChargeEntity,
                                     null,
                                     EXPLOSION_BEHAVIOR.get(),
@@ -244,45 +249,45 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                                     windChargeEntity.getZ(),
                                     2.4F,
                                     false,
-                                    World.ExplosionSourceType.TRIGGER,
+                                    Level.ExplosionInteraction.TRIGGER,
                                     ParticleTypes.GUST_EMITTER_SMALL,
                                     ParticleTypes.GUST_EMITTER_LARGE,
-                                    Pool.empty(),
-                                    SoundEvents.ENTITY_WIND_CHARGE_WIND_BURST
+                                    WeightedList.of(),
+                                    SoundEvents.WIND_CHARGE_BURST
                             );
                         break;
                     case 7:
-                        super.modifyTrialSpawner(context, world, blockPos, playerEntity, false);
+                        super.modifyTrialSpawner(context, level, blockPos, player, false);
                         for (int i = 0; i < 16; i++) {
-                            double d = playerEntity.getX() + (playerEntity.getRandom().nextDouble() - 0.5) * 16.0;
-                            double e = MathHelper.clamp(
-                                    playerEntity.getY() + (playerEntity.getRandom().nextInt(16) - 8), world.getBottomY(), (world.getBottomY() + ((ServerWorld)world).getLogicalHeight() - 1)
+                            double d = player.getX() + (player.getRandom().nextDouble() - 0.5) * 16.0;
+                            double e = Math.clamp(
+                                    player.getY() + (player.getRandom().nextInt(16) - 8), level.getMinY(), (level.getMinY() + ((ServerLevel)level).getLogicalHeight() - 1)
                             );
-                            double f = playerEntity.getZ() + (playerEntity.getRandom().nextDouble() - 0.5) * 16.0;
-                            if (playerEntity.hasVehicle()) {
-                                playerEntity.stopRiding();
+                            double f = player.getZ() + (player.getRandom().nextDouble() - 0.5) * 16.0;
+                            if (player.isVehicle()) {
+                                player.stopRiding();
                             }
-                            Vec3d vec3d = playerEntity.getEntityPos();
-                            if (playerEntity.teleport(d, e, f, true)) {
-                                world.emitGameEvent(GameEvent.TELEPORT, vec3d, GameEvent.Emitter.of(playerEntity));
-                                SoundCategory soundCategory;
+                            Vec3 vec3d = player.position();
+                            if (player.randomTeleport(d, e, f, true)) {
+                                level.gameEvent(GameEvent.TELEPORT, vec3d, GameEvent.Context.of(player));
+                                SoundSource soundCategory;
                                 SoundEvent soundEvent;
-                                soundEvent = SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT;
-                                soundCategory = SoundCategory.PLAYERS;
-                                world.playSound(null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), soundEvent, soundCategory);
-                                playerEntity.onLanding();
+                                soundEvent = SoundEvents.CHORUS_FRUIT_TELEPORT;
+                                soundCategory = SoundSource.PLAYERS;
+                                level.playSound(null, player.getX(), player.getY(), player.getZ(), soundEvent, soundCategory);
+                                player.resetFallDistance();
+                                player.resetCurrentImpulseContext();
                                 break;
                             }
                         }
-                        playerEntity.clearCurrentExplosion();
-                        playerEntity.getItemCooldownManager().set(context.getStack(), 20);
+                        player.getCooldowns().addCooldown(context.getItemInHand(), 20);
                         break;
                 }
-            if(!world.isClient()){
-                playerEntity.sendMessage(Text.translatable(ModItems.UNSTABLE_RETRIAL_KEY.get().getTranslationKey()+".fail."+forkID), true);
+            if(!level.isClientSide()){
+                player.sendOverlayMessage(Component.translatable(ModItems.UNSTABLE_RETRIAL_KEY.get().getDescriptionId()+".fail."+forkID));
             }
         }else{
-            super.modifyTrialSpawner(context, world, blockPos, playerEntity, false);
+            super.modifyTrialSpawner(context, level, blockPos, player, false);
         }
     }
 }

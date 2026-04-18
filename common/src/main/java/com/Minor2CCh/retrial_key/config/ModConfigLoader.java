@@ -1,7 +1,7 @@
 package com.Minor2CCh.retrial_key.config;
 
 import com.Minor2CCh.retrial_key.Retrial_key;
-import dev.architectury.platform.Platform;
+import com.Minor2CCh.retrial_key.platform.ModPlatform;
 import org.spongepowered.include.com.google.gson.Gson;
 import org.spongepowered.include.com.google.gson.GsonBuilder;
 
@@ -10,7 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class ModConfigLoader {
-    private static final File DIR = Platform.getConfigFolder().toFile();
+    private static final File DIR = ModPlatform.INSTANCE.getConfigPath().toFile();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String FILENAME = Retrial_key.MOD_ID+".json";
     private static final Path CONFIG_PATH = Path.of(new File(DIR,FILENAME).getPath());

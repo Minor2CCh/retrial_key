@@ -1,16 +1,16 @@
 package com.Minor2CCh.retrial_key.mixin;
 
-import net.minecraft.block.spawner.TrialSpawnerData;
+import net.minecraft.world.level.block.entity.trialspawner.TrialSpawnerStateData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(TrialSpawnerData.class)
+@Mixin(TrialSpawnerStateData.class)
 public interface TrialSpawnerAccessor {
-    @Accessor("cooldownEnd")
+    @Accessor("cooldownEndsAt")
     long cooldownEnd();
-    @Accessor("cooldownEnd")
+    @Accessor("cooldownEndsAt")
     void setCooldownEnd(long newCooldownEnd);
-    @Accessor("totalSpawnedMobs")
+    @Accessor("totalMobsSpawned")
     void setTotalSpawnedMobs(int TotalSpawnedMobs);
 }
 

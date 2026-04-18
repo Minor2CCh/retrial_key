@@ -3,87 +3,90 @@ package com.Minor2CCh.retrial_key.item;
 
 import com.Minor2CCh.retrial_key.config.ModConfigLoader;
 import com.Minor2CCh.retrial_key.mixin.TrialSpawnerAccessor;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.TrialSpawnerBlock;
-import net.minecraft.block.dispenser.DispenserBehavior;
-import net.minecraft.block.dispenser.ItemDispenserBehavior;
-import net.minecraft.block.entity.TrialSpawnerBlockEntity;
-import net.minecraft.block.enums.TrialSpawnerState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPointer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.TrialSpawnerBlock;
+import net.minecraft.world.level.block.entity.TrialSpawnerBlockEntity;
+import net.minecraft.world.level.block.entity.trialspawner.TrialSpawnerState;
+import net.minecraft.world.level.block.state.BlockState;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Random;
 
 public class RetrialKeyItem extends Item {
-    public static final DispenserBehavior DISPENSER_BEHAVIOR = new ItemDispenserBehavior() {
+    public static final DispenseItemBehavior DISPENSER_BEHAVIOR = new DefaultDispenseItemBehavior()
+
+    {
         @Override
-        protected ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
-            dispenseKey(pointer, stack);
-            return stack;
+        protected @NonNull ItemStack execute(final @NonNull BlockSource source, final @NonNull ItemStack dispensed) {
+            dispenseKey(source, dispensed);
+            return dispensed;
         }
     };
-    public RetrialKeyItem(Item.Settings settings) {
+    public RetrialKeyItem(Item.Properties settings) {
         super(settings);
         DispenserBlock.registerBehavior(this, DISPENSER_BEHAVIOR);
     }
 
-    public static void dispenseKey(BlockPointer pointer, ItemStack stack) {
-        ServerWorld world = pointer.world();
-        BlockPos pos = pointer.pos();
-        if (!world.isClient()) {
-            Direction dir = pointer.state().get(DispenserBlock.FACING);
-            BlockPos frontPos = pos.offset(dir);
-            if(world.getBlockState(frontPos).getBlock() instanceof TrialSpawnerBlock) {
+    public static void dispenseKey(BlockSource source, ItemStack stack) {
+        ServerLevel level = source.level();
+        BlockPos pos = source.pos();
+        if (!level.isClientSide()) {
+            Direction dir = source.state().getValue(DispenserBlock.FACING);
+            BlockPos frontPos = pos.relative(dir);
+            if(level.getBlockState(frontPos).getBlock() instanceof TrialSpawnerBlock) {
                 if(stack.getItem() instanceof RetrialKeyItem keyItem) {
-                    keyItem.accelerateFromDispenser(pointer, stack);
+                    keyItem.accelerateFromDispenser(source, stack);
                 }
             }
         }
     }
-    private void accelerateFromDispenser(BlockPointer pointer, ItemStack stack){
-        ServerWorld world = pointer.world();
-        Direction dir = pointer.state().get(DispenserBlock.FACING);
-        BlockPos pos = pointer.pos().offset(dir);
-        BlockState blockState = world.getBlockState(pos);
+    private void accelerateFromDispenser(BlockSource source, ItemStack stack){
+        ServerLevel level = source.level();
+        Direction dir = source.state().getValue(DispenserBlock.FACING);
+        BlockPos pos = source.pos().relative(dir);
+        BlockState blockState = level.getBlockState(pos);
         if (blockState.getBlock() instanceof TrialSpawnerBlock) {
-            if(blockState.get(TrialSpawnerBlock.TRIAL_SPAWNER_STATE).equals(TrialSpawnerState.COOLDOWN)){
-                if(!world.isClient()){
-                    modifyFromDispenser(pointer, false);
+            if(blockState.getValue(TrialSpawnerBlock.STATE).equals(TrialSpawnerState.COOLDOWN)){
+                if(!level.isClientSide()){
+                    modifyFromDispenser(source, false);
                 }
-                world.playSound(null, pos, SoundEvents.BLOCK_VAULT_INSERT_ITEM_FAIL, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                world.playSound(null, pos, SoundEvents.BLOCK_TRIAL_SPAWNER_OMINOUS_ACTIVATE, SoundCategory.BLOCKS, 1.0F, 0.5F);
+                level.playSound(null, pos, SoundEvents.VAULT_INSERT_ITEM_FAIL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                level.playSound(null, pos, SoundEvents.TRIAL_SPAWNER_OMINOUS_ACTIVATE, SoundSource.BLOCKS, 1.0F, 0.5F);
                 Random random = new Random();
                 for(int i=0;i<8;i++){
-                    world.spawnParticles(ParticleTypes.TRIAL_SPAWNER_DETECTION, pos.getX()+random.nextDouble(-0.25, 1.25), pos.getY()+random.nextDouble(-0.25, 1.25), pos.getZ()+random.nextDouble(-0.25, 1.25), 0, 0, 1, 0, random.nextDouble(0.05, 0.075));
-                    world.spawnParticles(ParticleTypes.TRIAL_SPAWNER_DETECTION_OMINOUS, pos.getX()+random.nextDouble(-0.25, 1.25), pos.getY()+random.nextDouble(-0.25, 1.25), pos.getZ()+random.nextDouble(-0.25, 1.25), 0, 0, 1, 0, random.nextDouble(0.05, 0.075));
+                    level.sendParticles(ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER, pos.getX()+random.nextDouble(-0.25, 1.25), pos.getY()+random.nextDouble(-0.25, 1.25), pos.getZ()+random.nextDouble(-0.25, 1.25), 0, 0, 1, 0, random.nextDouble(0.05, 0.075));
+                    level.sendParticles(ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER_OMINOUS, pos.getX()+random.nextDouble(-0.25, 1.25), pos.getY()+random.nextDouble(-0.25, 1.25), pos.getZ()+random.nextDouble(-0.25, 1.25), 0, 0, 1, 0, random.nextDouble(0.05, 0.075));
                 }
-                consumeItem(stack, world);
+                consumeItem(stack, level);
             }
         }
     }
-    protected void modifyFromDispenser(BlockPointer pointer, boolean enforcementSkip){
-        ServerWorld world = pointer.world();
-        Direction dir = pointer.state().get(DispenserBlock.FACING);
-        BlockPos pos = pointer.pos().offset(dir);
-        BlockState blockState = world.getBlockState(pos);
-        TrialSpawnerBlockEntity trialSpawnerBlockEntity = (TrialSpawnerBlockEntity) world.getBlockEntity(pos);
+    protected void modifyFromDispenser(BlockSource source, boolean enforcementSkip){
+        ServerLevel level = source.level();
+        Direction dir = source.state().getValue(DispenserBlock.FACING);
+        BlockPos pos = source.pos().relative(dir);
+        BlockState blockState = level.getBlockState(pos);
+        TrialSpawnerBlockEntity trialSpawnerBlockEntity = (TrialSpawnerBlockEntity) level.getBlockEntity(pos);
         if(trialSpawnerBlockEntity == null){
             return;
         }
-        long oldCooldown = ((TrialSpawnerAccessor)(trialSpawnerBlockEntity.getSpawner().getData())).cooldownEnd();//クライアントは0のみを返す
-        long remainCooldown = oldCooldown - world.getTime();
+        long oldCooldown = ((TrialSpawnerAccessor)(trialSpawnerBlockEntity.getTrialSpawner().getStateData())).cooldownEnd();//クライアントは0のみを返す
+        long remainCooldown = oldCooldown - level.getGameTime();
         if(remainCooldown > 20) {
             long newCooldown;
             long skipTime = ModConfigLoader.getConfig().getSkipCooldownTime();
@@ -92,52 +95,52 @@ public class RetrialKeyItem extends Item {
             }else{
                 newCooldown = oldCooldown - skipTime;
             }
-            ((TrialSpawnerAccessor)(trialSpawnerBlockEntity.getSpawner().getData())).setCooldownEnd(newCooldown);
+            ((TrialSpawnerAccessor)(trialSpawnerBlockEntity.getTrialSpawner().getStateData())).setCooldownEnd(newCooldown);
             if(newCooldown == 0){
-                world.setBlockState(pos, blockState.with(TrialSpawnerBlock.TRIAL_SPAWNER_STATE, TrialSpawnerState.WAITING_FOR_PLAYERS).with(TrialSpawnerBlock.OMINOUS, Boolean.FALSE));
+                level.setBlockAndUpdate(pos, blockState.setValue(TrialSpawnerBlock.STATE, TrialSpawnerState.WAITING_FOR_PLAYERS).setValue(TrialSpawnerBlock.OMINOUS, Boolean.FALSE));
             }
         }
 
     }
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        World world = context.getWorld();
-        BlockPos blockPos = context.getBlockPos();
-        PlayerEntity playerEntity = context.getPlayer();
+    public @NonNull InteractionResult useOn(UseOnContext context) {
+        Level world = context.getLevel();
+        BlockPos blockPos = context.getClickedPos();
+        Player playerEntity = context.getPlayer();
         if (accelerateTrialSpawner(context, world, blockPos, playerEntity)) {
-            return ActionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
-    private boolean accelerateTrialSpawner(ItemUsageContext context, World world, BlockPos blockPos, PlayerEntity playerEntity){
-        BlockState blockState = world.getBlockState(blockPos);
+    private boolean accelerateTrialSpawner(UseOnContext context, Level level, BlockPos blockPos, Player player){
+        BlockState blockState = level.getBlockState(blockPos);
         if (blockState.getBlock() instanceof TrialSpawnerBlock) {
-            if(blockState.get(TrialSpawnerBlock.TRIAL_SPAWNER_STATE).equals(TrialSpawnerState.COOLDOWN)){
-                if(!world.isClient()){
-                    modifyTrialSpawner(context, world, blockPos, playerEntity, false);
+            if(blockState.getValue(TrialSpawnerBlock.STATE).equals(TrialSpawnerState.COOLDOWN)){
+                if(!level.isClientSide()){
+                    modifyTrialSpawner(context, level, blockPos, player, false);
                 }
-                world.playSound(playerEntity, blockPos, SoundEvents.BLOCK_VAULT_INSERT_ITEM_FAIL, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                world.playSound(playerEntity, blockPos, SoundEvents.BLOCK_TRIAL_SPAWNER_OMINOUS_ACTIVATE, SoundCategory.BLOCKS, 1.0F, 0.5F);
+                level.playSound(player, blockPos, SoundEvents.VAULT_INSERT_ITEM_FAIL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                level.playSound(player, blockPos, SoundEvents.TRIAL_SPAWNER_OMINOUS_ACTIVATE, SoundSource.BLOCKS, 1.0F, 0.5F);
                 Random random = new Random();
                 for(int i=0;i<8;i++){
-                    world.addParticleClient(ParticleTypes.TRIAL_SPAWNER_DETECTION, blockPos.getX()+random.nextDouble(-0.25, 1.25), blockPos.getY()+random.nextDouble(-0.25, 1.25), blockPos.getZ()+random.nextDouble(-0.25, 1.25), 0.0, random.nextDouble(0.05, 0.075), 0.0);
-                    world.addParticleClient(ParticleTypes.TRIAL_SPAWNER_DETECTION_OMINOUS, blockPos.getX()+random.nextDouble(-0.25, 1.25), blockPos.getY()+random.nextDouble(-0.25, 1.25), blockPos.getZ()+random.nextDouble(-0.25, 1.25), 0.0, random.nextDouble(0.05, 0.075), 0.0);
+                    level.addParticle(ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER, blockPos.getX()+random.nextDouble(-0.25, 1.25), blockPos.getY()+random.nextDouble(-0.25, 1.25), blockPos.getZ()+random.nextDouble(-0.25, 1.25), 0.0, random.nextDouble(0.05, 0.075), 0.0);
+                    level.addParticle(ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER_OMINOUS, blockPos.getX()+random.nextDouble(-0.25, 1.25), blockPos.getY()+random.nextDouble(-0.25, 1.25), blockPos.getZ()+random.nextDouble(-0.25, 1.25), 0.0, random.nextDouble(0.05, 0.075), 0.0);
                 }
-                consumeItem(context, playerEntity);
+                consumeItem(context, player);
                 return true;
             }
 
         }
         return false;
     }
-    protected void modifyTrialSpawner(ItemUsageContext context, World world, BlockPos blockPos, PlayerEntity playerEntity, boolean enforcementSkip){
-        BlockState blockState = world.getBlockState(blockPos);
-        TrialSpawnerBlockEntity trialSpawnerBlockEntity = (TrialSpawnerBlockEntity) world.getBlockEntity(blockPos);
+    protected void modifyTrialSpawner(UseOnContext context, Level level, BlockPos blockPos, Player player, boolean enforcementSkip){
+        BlockState blockState = level.getBlockState(blockPos);
+        TrialSpawnerBlockEntity trialSpawnerBlockEntity = (TrialSpawnerBlockEntity) level.getBlockEntity(blockPos);
         if(trialSpawnerBlockEntity == null){
             return;
         }
-        long oldCooldown = ((TrialSpawnerAccessor)(trialSpawnerBlockEntity.getSpawner().getData())).cooldownEnd();//クライアントは0のみを返す
-        long remainCooldown = oldCooldown - world.getTime();
+        long oldCooldown = ((TrialSpawnerAccessor)(trialSpawnerBlockEntity.getTrialSpawner().getStateData())).cooldownEnd();//クライアントは0のみを返す
+        long remainCooldown = oldCooldown - level.getGameTime();
         if(remainCooldown > 20) {
             long newCooldown;
             long skipTime = ModConfigLoader.getConfig().getSkipCooldownTime();
@@ -146,25 +149,25 @@ public class RetrialKeyItem extends Item {
             }else{
                 newCooldown = oldCooldown - skipTime;
             }
-            ((TrialSpawnerAccessor)(trialSpawnerBlockEntity.getSpawner().getData())).setCooldownEnd(newCooldown);
+            ((TrialSpawnerAccessor)(trialSpawnerBlockEntity.getTrialSpawner().getStateData())).setCooldownEnd(newCooldown);
             if(newCooldown == 0){
-                world.setBlockState(blockPos, blockState.with(TrialSpawnerBlock.TRIAL_SPAWNER_STATE, TrialSpawnerState.WAITING_FOR_PLAYERS).with(TrialSpawnerBlock.OMINOUS, Boolean.FALSE));
+                level.setBlockAndUpdate(blockPos, blockState.setValue(TrialSpawnerBlock.STATE, TrialSpawnerState.WAITING_FOR_PLAYERS).setValue(TrialSpawnerBlock.OMINOUS, Boolean.FALSE));
             }
         }
     }
-    protected void consumeItem(ItemUsageContext context, PlayerEntity playerEntity){
-        if(context.getStack().getItem().getMaxCount() > 1){
-            context.getStack().decrementUnlessCreative(1, playerEntity);
-        }else if(context.getStack().isDamageable()){
-            context.getStack().damage(1, playerEntity, context.getHand().getEquipmentSlot());
+    protected void consumeItem(UseOnContext context, Player player){
+        if(context.getItemInHand().getMaxStackSize() > 1){
+            context.getItemInHand().consume(1, player);
+        }else if(context.getItemInHand().isDamageableItem()){
+            context.getItemInHand().hurtAndBreak(1, player, context.getHand().asEquipmentSlot());
         }
-        playerEntity.getItemCooldownManager().set(this.getDefaultStack(), 30);
+        player.getCooldowns().addCooldown(this.getDefaultInstance(), 30);
     }
-    protected void consumeItem(ItemStack stack, World world){
-        if(stack.getItem().getMaxCount() > 1){
-            stack.decrement(1);
-        }else if(stack.isDamageable() && world instanceof ServerWorld serverWorld){
-            stack.damage(1, serverWorld, null, (item) -> {});
+    protected void consumeItem(ItemStack stack, Level level){
+        if(stack.getMaxStackSize() > 1){
+            stack.shrink(1);
+        }else if(stack.isDamageableItem() && level instanceof ServerLevel serverLevel){
+            stack.hurtAndBreak(1, serverLevel, null, (_) -> {});
         }
     }
 }
