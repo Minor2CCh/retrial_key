@@ -11,19 +11,20 @@ authors = "Minor2CCh"
 description = '''
 Add an item to force Trial Spawner to skip its cooldown time.
 '''
-logoFile = "icon.png"
+bannerFile = "icon.png"
+iconFile = "icon.png"
 
 [[dependencies.retrial_key]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.1,)"
+versionRange = "[26.3,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.retrial_key]]
 modId = "minecraft"
 type = "required"
-versionRange = "[26.1,)"
+versionRange = "[26.3,)"
 ordering = "NONE"
 side = "BOTH"
 

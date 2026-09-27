@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "retrial_key:key_way"
+        "recipes": "retrial_key:key_way"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

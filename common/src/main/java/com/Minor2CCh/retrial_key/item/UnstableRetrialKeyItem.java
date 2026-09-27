@@ -134,7 +134,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                                 player.stopRiding();
                             }
                             Vec3 vec3d = player.position();
-                            if (player.randomTeleport(d, e, f, true)) {
+                            if (player.randomTeleport(d, e, f, true, BlockTags.CONSUMABLE_DOES_NOT_TELEPORT_TO)) {
                                 level.gameEvent(GameEvent.TELEPORT, vec3d, GameEvent.Context.of(player));
                                 SoundSource soundSource;
                                 SoundEvent soundEvent;
@@ -268,7 +268,7 @@ public class UnstableRetrialKeyItem extends RetrialKeyItem{
                                 player.stopRiding();
                             }
                             Vec3 vec3d = player.position();
-                            if (player.randomTeleport(d, e, f, true)) {
+                            if (player.randomTeleport(d, e, f, true, BlockTags.CONSUMABLE_DOES_NOT_TELEPORT_TO)) {
                                 level.gameEvent(GameEvent.TELEPORT, vec3d, GameEvent.Context.of(player));
                                 SoundSource soundCategory;
                                 SoundEvent soundEvent;

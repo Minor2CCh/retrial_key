@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "retrial_key:unstable_retrial_key"
+        "recipes": "retrial_key:unstable_retrial_key"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
